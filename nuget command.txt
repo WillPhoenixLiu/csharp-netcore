@@ -1,0 +1,2 @@
+nuget push src\OpenTracing.Contrib.NetCore\bin\Debug\OpenTracing.Contrib.NetCore.0.6.2-c201911080610.nupkg F6DD327853AC42BBB402380D92E269B2 -Source http://nuget.internal.myazstore.com/v3/index.json
+

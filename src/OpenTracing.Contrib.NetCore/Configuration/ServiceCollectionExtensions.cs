@@ -14,17 +14,31 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <summary>
         /// Adds OpenTracing instrumentation for ASP.NET Core, CoreFx (BCL), Entity Framework Core.
         /// </summary>
-        public static IServiceCollection AddOpenTracing(this IServiceCollection services, Action<IOpenTracingBuilder> builder = null)
+        public static IServiceCollection AddOpenTracing(this IServiceCollection services, Action<IOpenTracingBuilder> builder = null
+                        , bool addAspNetCore = true
+                        , bool addCoreFx = true
+                        , bool addEntityFrameworkCore = false)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
             return services.AddOpenTracingCoreServices(otBuilder =>
             {
-                otBuilder.AddAspNetCore()
-                    .AddCoreFx()
-                    .AddEntityFrameworkCore()
-                    .AddLoggerProvider();
+                if (addAspNetCore)
+                {
+                    otBuilder = otBuilder.AddAspNetCore();
+                }
+                if (addCoreFx)
+                {
+                    otBuilder = otBuilder.AddCoreFx();
+                }
+                if (addEntityFrameworkCore)
+                {
+                    otBuilder = otBuilder.AddEntityFrameworkCore();
+                }
+                otBuilder = otBuilder.AddCap();
+
+                otBuilder.AddLoggerProvider();
 
                 builder?.Invoke(otBuilder);
             });

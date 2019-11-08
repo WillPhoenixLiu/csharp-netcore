@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using OpenTracing.Contrib.NetCore.AspNetCore;
+using OpenTracing.Contrib.NetCore.CAP;
 using OpenTracing.Contrib.NetCore.Configuration;
 using OpenTracing.Contrib.NetCore.CoreFx;
 using OpenTracing.Contrib.NetCore.EntityFrameworkCore;
@@ -108,6 +109,20 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 builder.Services.Configure(options);
             }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds instrumentation for CAP.
+        /// </summary>
+        public static IOpenTracingBuilder AddCap(this IOpenTracingBuilder builder)
+        {
+            if (builder == null)
+                throw new ArgumentNullException(nameof(builder));
+
+            builder.AddDiagnosticSubscriber<CapDiagnostics>();
+            builder.ConfigureGenericDiagnostics(options => options.IgnoredListenerNames.Add(CapDiagnostics.DiagnosticListenerName));
 
             return builder;
         }
