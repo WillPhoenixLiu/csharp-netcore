@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -47,6 +49,14 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                     {
                         var request = (HttpRequestMessage)_activityStart_RequestFetcher.Fetch(arg);
 
+                        var traceid = "";
+
+                        if(request.Headers.Contains("uber-trace-id"))
+                            foreach (var t in request.Headers.GetValues("uber-trace-id"))
+                            traceid += $"{WebUtility.UrlDecode(t)},";
+
+                        Logger.LogDebug("{eventName} {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
+
                         if (IgnoreRequest(request))
                         {
                             Logger.LogDebug("Ignoring Request {RequestUri}", request.RequestUri);
@@ -69,6 +79,8 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                         if (_options.InjectEnabled?.Invoke(request) ?? true)
                         {
                             Tracer.Inject(span.Context, BuiltinFormats.HttpHeaders, new HttpHeadersInjectAdapter(request.Headers));
+                            Logger.LogDebug("{eventName} Inject {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
+
                         }
 
                         // This throws if there's already an item with the same key. We do this for now to get notified of potential bugs.
@@ -94,6 +106,15 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                 case "System.Net.Http.HttpRequestOut.Stop":
                     {
                         var request = (HttpRequestMessage)_activityStop_RequestFetcher.Fetch(arg);
+
+                        var traceid = "";
+
+                        if (request.Headers.Contains("uber-trace-id"))
+                            foreach (var t in request.Headers.GetValues("uber-trace-id"))
+                                traceid += $"{WebUtility.UrlDecode(t)},";
+
+                        Logger.LogDebug("{eventName} {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
+
 
                         if (request.Properties.TryGetValue(PropertiesKey, out object objSpan) && objSpan is ISpan span)
                         {
