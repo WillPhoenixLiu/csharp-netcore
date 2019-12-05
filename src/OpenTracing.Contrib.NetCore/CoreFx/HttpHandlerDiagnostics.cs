@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -40,7 +41,11 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
         {
             _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
-
+        string[] excludelist = new string[] {
+        "https://dc.services.visualstudio.com/v2/track",
+        "http://47.96.102.100/api/events/raw",
+        "https://dc.services.visualstudio.com/api/profiles/9438aa2b-46ce-49e4-b09e-c9c1ab732cf8/appId"
+        };
         protected override void OnNext(string eventName, object arg)
         {
             switch (eventName)
@@ -54,7 +59,7 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                         if(request.Headers.Contains("uber-trace-id"))
                             foreach (var t in request.Headers.GetValues("uber-trace-id"))
                             traceid += $"{WebUtility.UrlDecode(t)},";
-
+                        if(!excludelist.Contains(request.RequestUri.AbsoluteUri))
                         Logger.LogDebug("{eventName} {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
 
                         if (IgnoreRequest(request))
@@ -79,7 +84,9 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                         if (_options.InjectEnabled?.Invoke(request) ?? true)
                         {
                             Tracer.Inject(span.Context, BuiltinFormats.HttpHeaders, new HttpHeadersInjectAdapter(request.Headers));
-                            Logger.LogDebug("{eventName} Inject {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
+
+                            if (!excludelist.Contains(request.RequestUri.AbsoluteUri))
+                                Logger.LogDebug("{eventName} Inject {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
 
                         }
 
@@ -113,7 +120,8 @@ namespace OpenTracing.Contrib.NetCore.CoreFx
                             foreach (var t in request.Headers.GetValues("uber-trace-id"))
                                 traceid += $"{WebUtility.UrlDecode(t)},";
 
-                        Logger.LogDebug("{eventName} {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
+                        if (!excludelist.Contains(request.RequestUri.AbsoluteUri))
+                            Logger.LogDebug("{eventName} {RequestUri} | {@ubertraceid} at {AppName}", eventName, request.RequestUri, traceid, "OpenTracing.Contrib.NetCore");
 
 
                         if (request.Properties.TryGetValue(PropertiesKey, out object objSpan) && objSpan is ISpan span)
