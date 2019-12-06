@@ -1,23 +1,27 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Shared;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using FrontendWeb.Models;
+using System.Net.Http;
+using Shared;
 using Newtonsoft.Json;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Samples.FrontendWeb.Controllers
+namespace FrontendWeb.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly HttpClient _httpClient;
 
-        public HomeController(HttpClient httpClient)
+        public HomeController(IHttpClientFactory httpClient)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClient.CreateClient();
         }
 
         [HttpGet]
@@ -33,7 +37,7 @@ namespace Samples.FrontendWeb.Controllers
             return View(new PlaceOrderCommand { ItemNumber = "ABC11", Quantity = 1 });
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> PlaceOrder(PlaceOrderCommand cmd)
         {
             if (!ModelState.IsValid)
@@ -50,7 +54,7 @@ namespace Samples.FrontendWeb.Controllers
                 RequestUri = new Uri(Constants.OrdersUrl + "orders"),
                 Content = new StringContent(body, Encoding.UTF8, "application/json")
             };
-            
+
             await _httpClient.SendAsync(request);
 
             return RedirectToAction("Index");

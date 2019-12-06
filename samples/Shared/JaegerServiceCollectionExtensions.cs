@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class JaegerServiceCollectionExtensions
     {
-        private static readonly Uri _jaegerUri = new Uri("http://47.96.102.100:14268/api/traces");
+        private static readonly Uri _jaegerUri = new Uri("http://35.189.37.240:14268/api/traces");
 
         public static IServiceCollection AddJaeger(this IServiceCollection services)
         {

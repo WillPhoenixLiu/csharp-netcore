@@ -1,15 +1,33 @@
 {
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:56096",
+      "sslPort": 44307
+    }
+  },
   "profiles": {
-    "FrontendWeb": {
-      "commandName": "Project",
-      "launchUrl": "http://localhost:5000",
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Azure Dev Spaces": {
-      "commandName": "AzureDevSpaces",
-      "launchBrowser": true
+    "FrontendWeb": {
+        "commandName": "Project",
+        "launchBrowser": true,
+
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "applicationUrl": "http://localhost:15000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
     }
   }
 }

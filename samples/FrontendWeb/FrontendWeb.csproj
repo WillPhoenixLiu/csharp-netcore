@@ -1,26 +1,32 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>a6f45453-fb9b-4610-990d-341b6a9ee128</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
+
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
+  </ItemGroup>
+
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\OpenTracing.Contrib.NetCore\OpenTracing.Contrib.NetCore.csproj" />
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework)=='netcoreapp2.0'">
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.9" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(TargetFramework)=='netcoreapp2.1'">
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.1.3" />
-  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Jaeger" Version="0.3.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Kubernetes.Tools.Targets" Version="1.0.0" />
+    <Content Update="Views\Home\Index.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
+
 </Project>

@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+  frontendweb:
+    image: ${DOCKER_REGISTRY-}frontendweb
+    build:
+      context: .
+      dockerfile: samples/FrontendWeb/Dockerfile
+
+  customerapi:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: samples/CustomerApi/Dockerfile
+
+  orderapi:
+    image: ${DOCKER_REGISTRY-}orderapi
+    build:
+      context: .
+      dockerfile: samples/OrderApi/Dockerfile
