@@ -2,11 +2,14 @@
   "profiles": {
     "FrontendWeb": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Azure Dev Spaces": {
+      "commandName": "AzureDevSpaces",
+      "launchBrowser": true
     }
   }
 }

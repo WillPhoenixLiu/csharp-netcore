@@ -2,11 +2,14 @@
   "profiles": {
     "OrdersApi": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "http://localhost:5002",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Azure Dev Spaces": {
+      "commandName": "AzureDevSpaces",
+      "launchBrowser": true
     }
   }
 }
