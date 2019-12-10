@@ -33,8 +33,21 @@ namespace FrontendWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> PlaceOrder()
         {
-            ViewBag.Customers = await GetCustomers();
-            return View(new PlaceOrderCommand { ItemNumber = "ABC11", Quantity = 1 });
+            var customer = await GetCustomers();
+            var cmd = new PlaceOrderCommand { CustomerId = int.Parse(customer.FirstOrDefault().Value), ItemNumber = "ABC11", Quantity = 1 };
+
+            string body = JsonConvert.SerializeObject(cmd);
+
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri(Constants.OrdersUrl + "orders"),
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+
+            await _httpClient.SendAsync(request);
+
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
