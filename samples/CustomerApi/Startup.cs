@@ -27,6 +27,7 @@ namespace CustomerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
             // Adds an InMemory-Sqlite DB to show EFCore traces.
             services
                 .AddEntityFrameworkSqlite()
@@ -47,13 +48,15 @@ namespace CustomerApi
 
                     options.UseSqlite(connection);
                 });
-
+            services.AddMiniProfiler(options => options.RouteBasePath = "/profiler").AddEntityFramework();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseMiniProfiler();
+
             // Load some dummy data into the InMemory db.
             BootstrapDataStore(app.ApplicationServices);
 

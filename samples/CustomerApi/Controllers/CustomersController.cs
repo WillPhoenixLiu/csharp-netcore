@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Net;
+using AopTest;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -20,6 +22,7 @@ namespace Samples.CustomersApi.Controllers
         }
 
         [HttpGet]
+        [MyMI]
         public IActionResult Index()
         {
             return Json(_dbContext.Customers.ToList());
