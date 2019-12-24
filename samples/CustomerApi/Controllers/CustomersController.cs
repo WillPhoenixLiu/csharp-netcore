@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Net;
 using AopTest;
+using CustomerApi.Aop;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,8 @@ namespace Samples.CustomersApi.Controllers
         [MyMI]
         public IActionResult Index()
         {
+            var tc = new TestClass("a","b");
+            var s = tc.Add();
             return Json(_dbContext.Customers.ToList());
         }
 
